@@ -1,5 +1,8 @@
 package ch_02;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 class Node {
     private final char ch;
     private final Node left;
@@ -29,6 +32,23 @@ class Node {
 
         if (right != null) {
             right.deepWalk();
+        }
+    }
+
+    public void wideWalk() {
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(this);
+
+        while(!queue.isEmpty()) {
+            Node node = queue.remove();
+            System.out.print(node.ch);
+
+            if (node.left != null) {
+                queue.add(node.left);
+            }
+            if (node.right != null) {
+                queue.add(node.right);
+            }
         }
     }
 }
