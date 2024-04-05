@@ -24,5 +24,9 @@ public class Main {
         System.out.print("Deep walk: ");
         tree.deepWalk();
         System.out.println();
+
+        System.out.print("Wide walk: ");
+        tree.wideWalk();
+        System.out.println();
     }
 }
