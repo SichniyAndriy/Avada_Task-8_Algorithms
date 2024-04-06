@@ -57,8 +57,8 @@ public class Main {
         final int mid = from + (to - from) / 2;
 
         if (arr[mid] == x) return mid;
-        else if (arr[mid] < x) return searchBinary(x, arr , mid + 1, to, step);
-        else if (arr[mid] > x) return searchBinary(x, arr, from, mid - 1, step);
+        else if (x > arr[mid]) return searchBinary(x, arr , mid + 1, to, step);
+        else if (x < arr[mid]) return searchBinary(x, arr, from, mid - 1, step);
         else return -1;
     }
 
