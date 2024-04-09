@@ -10,14 +10,16 @@ public class ConverterToJson {
         return stringBuilder.append("\n}").toString();
     }
 
-    private static void prettyFormatterToJson(StringBuilder stringBuilder, Object object, int offset) throws IllegalAccessException {
+    private static void prettyFormatterToJson(StringBuilder stringBuilder, Object object, int offset)
+            throws IllegalAccessException
+    {
         Field[] fields = object.getClass().getDeclaredFields();
         for (Field field: fields) {
             String name = field.getName();
             stringBuilder.append("\n").append("\t".repeat(offset)).append("\"").append(name).append("\"").append(" : ");
+
             field.setAccessible(true);
             var o = field.get(object);
-
             if (o instanceof Number) {
                 stringBuilder.append(o);
             } else if (o instanceof String) {
