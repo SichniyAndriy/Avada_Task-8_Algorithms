@@ -64,16 +64,29 @@ public class Graph {
             Map<Vertex, Integer> neighbors = graph.get(i).getNeighbors();
             for (var el: neighbors.entrySet()) {
                 int j = el.getKey().getIndex();
-                if (!visited[j] && dist[i] + el.getValue() < dist[j]) {
-                    dist[j] = dist[i] + el.getValue();
+                int distance = dist[i] + el.getValue();
+                if (!visited[j] && distance < dist[j]) {
+                    dist[j] = distance;
                     predecessors[j] = i;
                 }
             }
-
             i = findMinIndex(dist, visited);
         }
 
         return formResponce(from, to, dist, predecessors);
+    }
+
+    // Method finds min index from unvisited vertices
+    private int findMinIndex(final int[] dist, final boolean[] visited) {
+        int min = Integer.MAX_VALUE;
+        int index = -1;
+        for (int i = 0; i < dist.length; ++i) {
+            if (!visited[i] && dist[i] < min) {
+                min = dist[i];
+                index = i;
+            }
+        }
+        return index;
     }
 
     // Form response using all formed resources in the previous method
@@ -91,17 +104,5 @@ public class Graph {
         }
         stringBuilder.append(" => ").append(graph.get(to).getName()).append("\n");
         return stringBuilder.toString();
-    }
-
-    private int findMinIndex(final int[] dist, final boolean[] visited) {
-        int min = Integer.MAX_VALUE;
-        int index = -1;
-        for (int i = 0; i < dist.length; ++i) {
-            if (!visited[i] && dist[i] < min) {
-                min = dist[i];
-                index = i;
-            }
-        }
-        return index;
     }
 }
