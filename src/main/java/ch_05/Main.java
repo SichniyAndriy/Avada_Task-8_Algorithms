@@ -13,7 +13,12 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         String line = scanner.nextLine();
         List<String> encrypted = user.encrypt(line);
-        String decripted = codec.decript(encrypted);
-        System.out.println(decripted);
+        System.out.println("Зашифрований текст виглядає так:");
+        for (var el: encrypted) {
+            System.out.println(el);
+        }
+        String decrypted = codec.decript(encrypted);
+        System.out.println("Розшифрований текст виглядає так:");
+        System.out.println(decrypted);
     }
 }
