@@ -12,7 +12,7 @@ public class CoDec {
         BigInteger p = BigInteger.probablePrime(1024, random);
         BigInteger q = BigInteger.probablePrime(1024, random);
         BigInteger n = p.multiply(q);
-        BigInteger eyler = p.subtract(BigInteger.valueOf(1)).multiply(q.subtract(BigInteger.valueOf(1)));
+        BigInteger eyler = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
 
         BigInteger e = BigInteger.probablePrime(256, random);
         BigInteger d = e.modInverse(eyler);
