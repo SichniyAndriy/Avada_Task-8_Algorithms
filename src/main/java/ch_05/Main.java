@@ -17,7 +17,7 @@ public class Main {
         for (var el: encrypted) {
             System.out.println(el);
         }
-        String decrypted = codec.decript(encrypted);
+        String decrypted = codec.decrypt(encrypted);
         System.out.println("Розшифрований текст виглядає так:");
         System.out.println(decrypted);
     }

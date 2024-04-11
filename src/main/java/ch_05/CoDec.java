@@ -21,7 +21,7 @@ public class CoDec {
         return new BigInteger[] { e, n };
     }
 
-    public String decript(List<String> stringList) {
+    public String decrypt(List<String> stringList) {
         StringBuilder stringBuilder = new StringBuilder();
         for (var el: stringList) {
             BigInteger value = new BigInteger(el);
