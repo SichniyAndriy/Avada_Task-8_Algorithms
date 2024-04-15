@@ -14,12 +14,12 @@ public class ConverterToJson {
             return "null";
         }
         StringBuilder stringBuilder = new StringBuilder("{");
-        elementToJson(stringBuilder, object, 1);
+        objectToJson(stringBuilder, object, 1);
         stringBuilder.deleteCharAt(stringBuilder.length() - 1);
         return stringBuilder.append("\n}").toString();
     }
 
-    private static void elementToJson(StringBuilder stringBuilder, Object object, int offset)
+    private static void objectToJson(StringBuilder stringBuilder, Object object, int offset)
             throws IllegalAccessException
     {
         List<Field> allFields = new ArrayList<>(Arrays.asList(object.getClass().getDeclaredFields()));
@@ -32,70 +32,57 @@ public class ConverterToJson {
             stringBuilder.append("\n").append("\t".repeat(offset)).append("\"").append(name).append("\"").append(" : ");
 
             field.setAccessible(true);
+            Object value = field.get(object);
             Class<?> type = field.getType();
-            Object o = field.get(object);
-            if (o == null) {
-                stringBuilder.append("null");
-            } else if (type.isPrimitive() || o instanceof Number || o instanceof Boolean) {
-                stringBuilder.append(o);
-            } else if (o instanceof CharSequence) {
-                stringBuilder.append("\"").append(o).append("\"");
-            } else if (type.isArray()) {
-                stringBuilder.append("[ ");
-                arrayToJson(stringBuilder, o, offset);
-                stringBuilder.append(" ]");
-            } else if (o instanceof Collection<?>) {
-                stringBuilder.append("[ ");
-                for (var el: (Collection<?>) o) {
-                    pickUpAction(stringBuilder, el, offset);
-                    stringBuilder.append(",");
-                }
-                stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-                stringBuilder.append(" ]");
-            } else if (o instanceof Map<?, ?>) {
-                stringBuilder.append("{ ");
-                for (var el: ((Map<?,?>) o).entrySet()) {
-                    pickUpAction(stringBuilder, el.getKey(),offset + 1);
-                    stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
+
+            if (type.isArray()) {
+                arrayToJson(stringBuilder, value, offset + 1);
+            } else if (value instanceof Collection<?>) {
+                arrayToJson(stringBuilder, ((Collection<?>) value).toArray(), offset + 1);
+            } else if (value instanceof Map<?, ?>) {
+                stringBuilder.append("{\n");
+                for (var el: ((Map<?, ?>) value).entrySet()) {
+                    stringBuilder.append("\t".repeat(offset + 1));
+                    valueToJson(stringBuilder, el.getKey(),offset + 1);
                     stringBuilder.append(" : ");
-                    pickUpAction(stringBuilder, el.getValue(), offset + 1);
+                    valueToJson(stringBuilder, el.getValue(),offset + 1);
+                    stringBuilder.append(",\n");
                 }
                 stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
-                stringBuilder.append(" }");
-            } else {
-                stringBuilder.append("{ ");
-                elementToJson(stringBuilder,o,offset + 1);
-                stringBuilder.deleteCharAt(stringBuilder.length() - 1);
                 stringBuilder.append("\n").append("\t".repeat(offset)).append("}");
+            } else {
+                valueToJson(stringBuilder, value, offset);
             }
             stringBuilder.append(",");
         }
     }
 
-    private static void arrayToJson(StringBuilder stringBuilder, Object array, int offset) throws IllegalAccessException {
+    private static void arrayToJson(StringBuilder stringBuilder, Object array, int offset)
+            throws IllegalAccessException {
         int len = Array.getLength(array);
-        ;
+        stringBuilder.append("[ ");
         for (int i = 0; i < len; ++i) {
-            Object el = Array.get(array, i);
-            pickUpAction(stringBuilder, el, offset);
+            valueToJson(stringBuilder,Array.get(array, i), offset + 1);
+            stringBuilder.append(", ");
         }
         stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
+        stringBuilder.append(" ]");
     }
 
-    private static void pickUpAction(StringBuilder stringBuilder, Object obj, int offset)
+    private static void valueToJson(StringBuilder stringBuilder, Object value, int offset)
             throws IllegalAccessException {
-        if (obj == null ||
-                obj.getClass().isPrimitive() ||
-                obj instanceof Number ||
-                obj instanceof Boolean) {
-            stringBuilder.append(obj).append(", ");
-        } else if (obj instanceof CharSequence) {
-            stringBuilder.append("\"").append(obj).append("\"").append(", ");
+        if (value == null ||
+            value.getClass().isPrimitive() ||
+            value instanceof Number ||
+            value instanceof Boolean) {
+            stringBuilder.append(value);
+        } else if (value instanceof CharSequence) {
+            stringBuilder.append("\"").append(value).append("\"");
         } else {
-            stringBuilder.append(" {");
-            elementToJson(stringBuilder, obj, offset + 1);
+            stringBuilder.append("{");
+            objectToJson(stringBuilder, value, offset + 1);
             stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-            stringBuilder.append("\n").append("\t".repeat(offset + 1)).append("}");
+            stringBuilder.append("\n").append("\t".repeat(offset)).append("}");
         }
     }
 }
