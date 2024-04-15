@@ -52,7 +52,7 @@ public class ConverterToJson {
                 }
                 stringBuilder.deleteCharAt(stringBuilder.length() - 1);
                 stringBuilder.append(" ]");
-            } else if (o instanceof Map) {
+            } else if (o instanceof Map<?, ?>) {
                 stringBuilder.append("{ ");
                 for (var el: ((Map<?,?>) o).entrySet()) {
                     pickUpAction(stringBuilder, el.getKey(),offset + 1);
