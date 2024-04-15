@@ -1,12 +1,12 @@
 package ch_06;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
-public class Dog {
-    private String breed;
-    private String name;
-    private int age;
+public class Dog extends Pet {
+
 }
